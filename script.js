@@ -1,52 +1,72 @@
-// Get the form and the table body
-const form = document.getElementById("orderForm");
-const ordersTable = document.querySelector("#ordersTable tbody");
+const chatList = document.getElementById("chatList");
+const messages = document.getElementById("messages");
+const chatHeader = document.getElementById("chatHeader");
+const messageInput = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
 
-// Load any saved orders from localStorage
-let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+// Editable contact list
+let contacts = [
+  { id: 1, name: "Contact 1", unread: true, messages: [] },
+  { id: 2, name: "Contact 2", unread: false, messages: [] },
+  { id: 3, name: "Contact 3", unread: true, messages: [] }
+];
 
-// Function to display all orders on the page
-function renderOrders() {
-  ordersTable.innerHTML = ""; // clear old data
-  orders.forEach((order) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${order.username}</td>
-      <td>${order.service}</td>
-      <td>${order.quantity}</td>
-      <td>${order.status}</td>
-    `;
-    ordersTable.appendChild(row);
+let currentChat = null;
+
+// Load contact list
+function loadContacts() {
+  chatList.innerHTML = "";
+  contacts.forEach(contact => {
+    const div = document.createElement("div");
+    div.className = `chat-item ${contact.unread ? "unread" : ""}`;
+    div.textContent = contact.name;
+    div.dataset.id = contact.id;
+
+    // Click to open chat
+    div.addEventListener("click", () => openChat(contact.id));
+
+    // Long press to mark as read/unread
+    let pressTimer;
+    div.addEventListener("mousedown", () => {
+      pressTimer = setTimeout(() => toggleRead(contact.id), 800);
+    });
+    div.addEventListener("mouseup", () => clearTimeout(pressTimer));
+
+    chatList.appendChild(div);
   });
-
-  // Update summary cards
-  document.getElementById("ordersCount").textContent = orders.length;
-  document.getElementById("completedCount").textContent = orders.filter(o => o.status === "Completed ✅").length;
-  document.getElementById("pendingCount").textContent = orders.filter(o => o.status === "Pending ⏳").length;
 }
 
-// Handle new order submission
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
+function openChat(id) {
+  currentChat = contacts.find(c => c.id === id);
+  currentChat.unread = false;
+  chatHeader.textContent = currentChat.name;
+  renderMessages();
+  loadContacts();
+}
 
-  const username = document.getElementById("username").value.trim();
-  const quantity = document.getElementById("quantity").value.trim();
-  const service = document.getElementById("service").value;
+function renderMessages() {
+  messages.innerHTML = "";
+  currentChat.messages.forEach(msg => {
+    const div = document.createElement("div");
+    div.className = `message ${msg.sent ? "sent" : "received"}`;
+    div.textContent = msg.text;
+    messages.appendChild(div);
+  });
+}
 
-  if (!username || !quantity) return alert("Please fill in all fields");
-
-  const newOrder = {
-    username,
-    quantity,
-    service,
-    status: "Pending ⏳"
-  };
-
-  orders.push(newOrder);
-  localStorage.setItem("orders", JSON.stringify(orders)); // save permanently
-  renderOrders();
-  form.reset();
+sendBtn.addEventListener("click", () => {
+  const text = messageInput.value.trim();
+  if (!text || !currentChat) return;
+  currentChat.messages.push({ text, sent: true });
+  messageInput.value = "";
+  renderMessages();
 });
 
-// Display existing orders when page loads
-renderOrders();
+function toggleRead(id) {
+  const contact = contacts.find(c => c.id === id);
+  contact.unread = !contact.unread;
+  loadContacts();
+}
+
+// Initial load
+loadContacts();
