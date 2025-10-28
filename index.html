@@ -1,30 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat App</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WhatsApp-like UI</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app">
-    <div class="sidebar">
-      <div class="header">
-        <h2>My Chats</h2>
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="top-left">
+        <div class="hamburger">☰</div>
+        <div class="title">WhatsApp</div>
       </div>
-      <div class="chat-list" id="chatList">
-        <!-- Contacts will load here dynamically -->
+      <div class="top-right">
+        <button class="icon">📷</button>
+        <button class="icon">🔍</button>
+        <button class="icon">⋮</button>
       </div>
-    </div>
+    </header>
 
-    <div class="chat-window">
-      <div class="chat-header" id="chatHeader">Select a chat</div>
-      <div class="messages" id="messages"></div>
-      <div class="chat-input">
-        <input type="text" id="messageInput" placeholder="Type a message..." />
-        <button id="sendBtn">Send</button>
-      </div>
-    </div>
+    <!-- Main area -->
+    <main class="main">
+      <!-- Sidebar / chat list -->
+      <aside class="sidebar">
+        <div class="search">
+          <input id="searchInput" placeholder="Search or start new chat" />
+        </div>
+
+        <div class="tabs">
+          <button class="tab active">All</button>
+          <button class="tab">Unread</button>
+          <button class="tab">Groups</button>
+        </div>
+
+        <div id="chatList" class="chat-list"></div>
+      </aside>
+
+      <!-- Chat window -->
+      <section class="chat-panel">
+        <div id="chatHeader" class="chat-header">
+          <div class="chat-head-left">
+            <div class="avatar circle"></div>
+            <div class="chat-title">Select a chat</div>
+          </div>
+          <div class="chat-head-right">
+            <button class="icon">🔍</button>
+            <button class="icon">⋮</button>
+          </div>
+        </div>
+
+        <div id="messages" class="messages empty">
+          <div class="empty-state">Open a chat to start messaging</div>
+        </div>
+
+        <div class="composer">
+          <input id="messageInput" placeholder="Type a message" />
+          <button id="sendBtn" class="send-btn">➤</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom nav -->
+    <nav class="bottom-nav">
+      <button class="bn active">Chats</button>
+      <button class="bn">Updates</button>
+      <button class="bn">Communities</button>
+      <button class="bn">Calls</button>
+    </nav>
   </div>
 
   <script src="script.js"></script>
